@@ -1,0 +1,42 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary Background */
+  --color-background: #f8fafc; /* A very light, almost off-white for the main background */
+
+  /* Card/Container Background */
+  --color-surface: #ffffff; /* Pure white for cards and elevated surfaces */
+
+  /* Text Colors */
+  --color-text-primary: #1f2937; /* Dark gray for primary text (headings, body) */
+  --color-text-secondary: #4b5563; /* Medium gray for secondary text (labels, descriptions) */
+  --color-text-placeholder: #9ca3af; /* Light gray for placeholder text */
+
+  /* Accent Colors */
+  --color-accent-primary: #10b981; /* A vibrant green for positive actions, sales highlights */
+  --color-accent-secondary: #3b82f6; /* A clear blue for general interactive elements, buttons */
+
+  /* Warning/Error Colors */
+  --color-warning: #ef4444; /* A bright red for low stock warnings or errors */
+
+  /* Border Colors */
+  --color-border: #e5e7eb; /* A light gray for subtle borders */
+
+  /* Shadow Colors (for subtle shadows) */
+  --color-shadow-light: rgba(0, 0, 0, 0.05); /* Very light shadow for cards */
+  --color-shadow-medium: rgba(
+    0,
+    0,
+    0,
+    0.1
+  ); /* Slightly stronger shadow for interactive elements */
+}
+
+body {
+  background-color: #f8f8f8;
+  color: var(--color-text-primary);
+  font-family: "Inter", "Noto Sans", sans-serif;
+}
