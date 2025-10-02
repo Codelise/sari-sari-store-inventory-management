@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navLinks: NavBarLinks[] = [
-  { label: "Sign Up", href: "./pages/signup", showOnPages: ["landing"] },
-  { label: "Log In", href: "./pages/login", showOnPages: ["landing"] },
+  { label: "Sign Up", href: "/signup", showOnPages: ["landing"] },
+  { label: "Log In", href: "/login", showOnPages: ["landing"] },
   { label: "Dashboard", href: "./dashboard", showOnPages: ["dashboard"] },
   { label: "Inventory", href: "./inventory", showOnPages: ["dashboard"] },
   { label: "Sales", href: "./sales", showOnPages: ["dashboard"] },
