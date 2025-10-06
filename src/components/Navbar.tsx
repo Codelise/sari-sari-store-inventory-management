@@ -10,6 +10,7 @@ const navLinks: NavBarLinks[] = [
   { label: "Inventory", href: "./inventory", showOnPages: ["dashboard"] },
   { label: "Sales", href: "./sales", showOnPages: ["dashboard"] },
   { label: "Report", href: "./report", showOnPages: ["dashboard"] },
+  { label: "Logout", href: "../", showOnPages: ["dashboard"] },
 ];
 
 export interface NavbarProps {

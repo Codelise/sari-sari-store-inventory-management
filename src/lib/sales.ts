@@ -1,0 +1,20 @@
+import { productService } from "./database";
+
+export const salesService = {
+  async recordSale(
+    productId: string,
+    quantity: number,
+    price: number
+  ): Promise<void> {
+    const salesAmount = quantity * price;
+    await productService.incrementDailySales(productId, salesAmount);
+  },
+
+  async getTodaySales(): Promise<number> {
+    return await productService.getTodayTotalSales();
+  },
+
+  async resetDailySales(): Promise<void> {
+    await productService.resetAllDailySales();
+  },
+};

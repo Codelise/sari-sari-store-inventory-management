@@ -154,7 +154,7 @@ export default function LoginPage() {
         onClose={() => {
           setShowModal(false);
           if (modalConfig.type === "success") {
-            router.push("/dashboard");
+            router.push("/pages/dashboard");
           }
         }}
         type={modalConfig.type}
