@@ -29,4 +29,5 @@ export interface NavBarLinks {
   label: string;
   href: string;
   showOnPages?: ("landing" | "dashboard")[]; // array of links where the links should appear different
+  isAction?: boolean; // Add this new property
 }

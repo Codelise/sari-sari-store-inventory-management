@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import ProductModal from "@/components/ProductModal";
+import SaleModal from "@/components/SaleModal";
 import { Product, ProductFormData } from "@/types/product";
-import { productService } from "@/lib/database";
-import { salesService } from "@/lib/sales";
+import { productService, salesService } from "@/lib/database";
 
 export default function Dashboard() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState<"name" | "quantity" | "price">("name");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [todaySales, setTodaySales] = useState<number>(0);
   const [loading, setLoading] = useState(true);
@@ -36,11 +37,19 @@ export default function Dashboard() {
   const loadTodaySales = async () => {
     try {
       setSalesLoading(true);
-      const salesTotal = await productService.getTodayTotalSales();
+      // Try to get sales from sales table first (more accurate)
+      const salesTotal = await salesService.getTodaySales();
       setTodaySales(salesTotal);
     } catch (error) {
-      console.error("Error loading today sales:", error);
-      setTodaySales(0);
+      console.error("Error loading today sales from sales table:", error);
+      // Fallback to productService method
+      try {
+        const fallbackTotal = await productService.getTodayTotalSales();
+        setTodaySales(fallbackTotal);
+      } catch (fallbackError) {
+        console.error("Error loading fallback sales:", fallbackError);
+        setTodaySales(0);
+      }
     } finally {
       setSalesLoading(false);
     }
@@ -51,19 +60,10 @@ export default function Dashboard() {
       const product = products.find((p) => p.id === productId);
       if (!product) throw new Error("Product not found");
 
-      if (product.quantity < quantity) {
-        alert(`Insufficient stock. Only ${product.quantity} items available.`);
-        return;
-      }
+      // Use the new sales service that records to sales table
+      await salesService.recordSale(productId, quantity);
 
-      // Record the sale
-      await salesService.recordSale(productId, quantity, product.price);
-
-      // Update product quantity
-      const newQuantity = product.quantity - quantity;
-      await productService.updateProduct(productId, { quantity: newQuantity });
-
-      // Reload data
+      // Reload data to reflect changes
       await loadProducts();
       await loadTodaySales();
 
@@ -74,7 +74,7 @@ export default function Dashboard() {
       );
     } catch (error) {
       console.error("Error recording sale:", error);
-      alert("Failed to record sale");
+      alert(error instanceof Error ? error.message : "Failed to record sale");
     }
   };
 
@@ -82,7 +82,7 @@ export default function Dashboard() {
     try {
       await productService.createProduct(data);
       await loadProducts();
-      setIsModalOpen(false);
+      setIsProductModalOpen(false);
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -94,7 +94,7 @@ export default function Dashboard() {
     try {
       await productService.updateProduct(editingProduct.id, data);
       await loadProducts();
-      setIsModalOpen(false);
+      setIsProductModalOpen(false);
       setEditingProduct(null);
     } catch (error) {
       console.error("Error updating product:", error);
@@ -120,7 +120,7 @@ export default function Dashboard() {
       )
     ) {
       try {
-        await salesService.resetDailySales();
+        await productService.resetAllDailySales();
         await loadProducts();
         await loadTodaySales();
         alert("Daily sales reset successfully!");
@@ -133,11 +133,11 @@ export default function Dashboard() {
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
-    setIsModalOpen(true);
+    setIsProductModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);
+    setIsProductModalOpen(false);
     setEditingProduct(null);
   };
 
@@ -179,9 +179,27 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <div className="bg-white flex place-content-end rounded-lg shadow-sm p-6 ">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={() => setIsProductModalOpen(true)}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium transition-colors shadow-sm"
+          >
+            Add New Product
+          </button>
+          <button
+            onClick={() => setIsSaleModalOpen(true)}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md font-medium transition-colors shadow-sm"
+          >
+            Record Sale
+          </button>
+        </div>
+      </div>
+
       {/* Search and Controls */}
       <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
           {/* Search Input */}
           <div className="w-full md:w-1/3">
             <div className="relative">
@@ -215,16 +233,6 @@ export default function Dashboard() {
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* Add Product Button */}
-          <div className="w-full md:w-auto">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"
-            >
-              Add New Product
-            </button>
           </div>
         </div>
 
@@ -313,36 +321,25 @@ export default function Dashboard() {
 
       {/* Product Modal */}
       <ProductModal
-        isOpen={isModalOpen}
+        isOpen={isProductModalOpen}
         onClose={closeModal}
         onSubmit={editingProduct ? handleUpdateProduct : handleCreateProduct}
         product={editingProduct}
         isEditing={!!editingProduct}
       />
+
+      {/* Sale Modal */}
+      <SaleModal
+        isOpen={isSaleModalOpen}
+        onClose={() => setIsSaleModalOpen(false)}
+        products={products}
+        onRecordSale={handleRecordSale}
+      />
     </div>
   );
 }
 
-// Add Sell Icon
-function SellIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5.5M7 13l2.5 5.5m5.5-5.5h5.5m-5.5 0V19a2 2 0 104 0v-1.5"
-      />
-    </svg>
-  );
-}
-
-// Search Icon
+// Icon Components
 function SearchIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -361,7 +358,24 @@ function SearchIcon({ className }: { className?: string }) {
   );
 }
 
-// Edit Icon
+function SellIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5.5M7 13l2.5 5.5m5.5-5.5h5.5m-5.5 0V19a2 2 0 104 0v-1.5"
+      />
+    </svg>
+  );
+}
+
 function EditIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -380,7 +394,6 @@ function EditIcon({ className }: { className?: string }) {
   );
 }
 
-// Delete Icon
 function DeleteIcon({ className }: { className?: string }) {
   return (
     <svg

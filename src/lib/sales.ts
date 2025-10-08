@@ -18,3 +18,18 @@ export const salesService = {
     await productService.resetAllDailySales();
   },
 };
+
+export interface SalesHistory {
+  id: string;
+  date: string;
+  product_name: string;
+  quantity_sold: number;
+  total_amount: number;
+  unit_type: string;
+}
+
+export interface SalesHistoryFilters {
+  search: string;
+  dateFrom?: string;
+  dateTo?: string;
+}

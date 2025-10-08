@@ -45,7 +45,7 @@ export default function ProductModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed inset-0 bg-black/50" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
@@ -62,7 +62,7 @@ export default function ProductModal({
               <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="text-xl font-medium leading-6 text-gray-900"
                 >
                   {isEditing ? "Edit Product" : "Add New Product"}
                 </Dialog.Title>
@@ -71,7 +71,7 @@ export default function ProductModal({
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       Product Name
                     </label>
@@ -81,7 +81,7 @@ export default function ProductModal({
                       id="name"
                       required
                       defaultValue={product?.name || ""}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                      className="mt-1 p-2 block w-full rounded-md border-gray-300 text-md shadow-sm focus:border-green-500 focus:ring-green-500 "
                       placeholder="Enter product name"
                     />
                   </div>
@@ -89,7 +89,7 @@ export default function ProductModal({
                   <div>
                     <label
                       htmlFor="supplier"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       Supplier
                     </label>
@@ -99,7 +99,7 @@ export default function ProductModal({
                       id="supplier"
                       required
                       defaultValue={product?.supplier || ""}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                      className="mt-1 p-2 block w-full rounded-md border-gray-500 text-md shadow-sm focus:border-green-500 focus:ring-green-500 "
                       placeholder="Enter supplier name or brand"
                     />
                   </div>
@@ -107,7 +107,7 @@ export default function ProductModal({
                   <div>
                     <label
                       htmlFor="price"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       Price (₱)
                     </label>
@@ -119,7 +119,7 @@ export default function ProductModal({
                       min="0"
                       required
                       defaultValue={product?.price || ""}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                      className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm text-md focus:border-green-500 focus:ring-green-500"
                       placeholder="0.00"
                     />
                   </div>
@@ -127,7 +127,7 @@ export default function ProductModal({
                   <div>
                     <label
                       htmlFor="quantity"
-                      className="block text-sm font-medium text-gray-700"
+                      className="block text-lg font-medium text-gray-700"
                     >
                       Quantity
                     </label>
@@ -138,7 +138,7 @@ export default function ProductModal({
                       min="0"
                       required
                       defaultValue={product?.quantity || ""}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                      className="mt-1 p-2 block w-full rounded-md border-gray-300 text-md shadow-sm focus:border-green-500 focus:ring-green-500"
                       placeholder="0"
                     />
                   </div>
@@ -147,13 +147,13 @@ export default function ProductModal({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-md font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-md font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
                       {isEditing ? "Update" : "Create"}
                     </button>

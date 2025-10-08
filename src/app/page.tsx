@@ -18,8 +18,7 @@ export default function LandingPage() {
               <div
                 className="bg-center bg-no-repeat bg-cover "
                 style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAgdll0Tq6QN7cDOwAh9e6tKXYM-ejtOiwLQwo5Jw8v7LBInkPIzJh4r3nBEHYw4XsiNadhJrs8xyoThe1SK0zpAmGNLZ-Wjc2QeJ7euMswttJ4Fstmsdrota5kbg7SRLtTbpfjiuZEA4TLO0MtQOIkKJWzBsSYNFd5i7FG2GPI4Mk-dSAnafM9nu_v96ufYGEB5tTkNk5S1d8uvbIw6ojFSgk0rJqF6Vv12qdGkmuIbP66bp0w3N6tlCcuSPqOMkBWvVUXlcJu6Fsw')",
+                  backgroundImage: "url('/sari-sari-store.jpg')",
                 }}
               >
                 {/* Content */}
@@ -137,7 +136,7 @@ export default function LandingPage() {
                 </a>
               </div>
               <p className="text-gray-600 text-base">
-                © 2024 Sari-Sari Tracker. All rights reserved.
+                © 2025 Sari-Sari Tracker. All rights reserved.
               </p>
             </footer>
           </div>
